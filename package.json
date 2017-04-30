@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jenniferwg/x-cell/issues"
   },
-  "homepage": "https://github.com/jenniferwg/x-cell#readme"
+  "homepage": "https://github.com/jenniferwg/x-cell#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
 }
