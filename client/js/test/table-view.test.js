@@ -11,6 +11,49 @@ describe('table-view', () => {
       document.documentElement.innerHTML = html;
   });
 
+  describe('table footer', () => {
+    it('calculates sum of valid positive values', () => {
+      // set up initial state
+      const model = new TableModel(3, 3);
+      const view = new TableView(model);
+      model.setValue({col: 2, row: 1}, '5');
+      model.setValue({col: 2, row: 2}, '3');
+      view.init()
+
+      // inspect the initial state
+      let tfs = document.querySelectorAll('TFOOT TR');
+      expect(tfs[0].cells[2].textContent).toBe('8');
+    })
+
+    it('calculates sum of valid negative values', () => {
+      // set up initial state
+      const model = new TableModel(3, 3);
+      const view = new TableView(model);
+      model.setValue({col: 2, row: 1}, '5');
+      model.setValue({col: 2, row: 2}, '-5');
+      view.init()
+
+      // inspect the initial state
+      let tfs = document.querySelectorAll('TFOOT TR');
+      expect(tfs[0].cells[2].textContent).toBe('0');
+    })
+
+    it('ignores invalid values', () => {
+      // set up initial state
+      const model = new TableModel(3, 3);
+      const view = new TableView(model);
+      model.setValue({col: 2, row: 1}, '5');
+      model.setValue({col: 2, row: 2}, 'invalid');
+      model.setValue({col: 3, row: 3}, '#*$&');
+      view.init()
+
+      // inspect the initial state
+      let tfs = document.querySelectorAll('TFOOT TR');
+      expect(tfs[0].cells[2].textContent).toBe('5');
+      expect(tfs[0].cells[3]).toBeUndefined();
+    })
+  })
+
   describe('formula bar', () => {
     it('makes changes TO the value of the current cell', () => {
       // set up the initial state
@@ -43,7 +86,7 @@ describe('table-view', () => {
       const formulaBarEl = document.querySelector('#formula-bar');
       expect(formulaBarEl.value).toBe('');
 
-      // simualte user action
+      // simulate user action
       const trs = document.querySelectorAll('TBODY TR');
       trs[1].cells[2].click();
 

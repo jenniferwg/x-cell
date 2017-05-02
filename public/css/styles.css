@@ -10,10 +10,16 @@ td {
   padding: 3px;
 }
 
+thead {
+  background-color: #E91E63;
+}
+
+tfoot {
+  background-color: #F06292;
+}
+
 .current-cell {
-  background-color: #FFF2F9;
-  border: 2px solid #F48FB1;
-  box-shadow: 0 0 4px #F48FB1;
+  background-color: #FCE4EC;
 }
 
 #formula-bar {
