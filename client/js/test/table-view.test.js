@@ -11,6 +11,47 @@ describe('table-view', () => {
       document.documentElement.innerHTML = html;
   });
 
+  describe('formula bar', () => {
+    it('makes changes TO the value of the current cell', () => {
+      // set up the initial state
+      const model = new TableModel(3, 3);
+      const view = new TableView(model);
+      view.init();
+
+      // inspect the initial state
+      let trs = document.querySelectorAll('TBODY TR');
+      let td = trs[0].cells[0];
+      expect(td.textContent).toBe('');
+
+      // simulate user action
+      document.querySelector('#formula-bar').value = '65';
+      view.handleFormulaBarChange();
+
+      // inspect the resulting state
+      trs = document.querySelectorAll('TBODY TR');
+      expect(trs[0].cells[0].textContent).toBe('65');
+    })
+
+    it('updates FROM the value of the current cell', () => {
+      // set up the initial state
+      const model = new TableModel(3, 3);
+      const view = new TableView(model);
+      model.setValue({col: 2, row: 1}, '123');
+      view.init();
+
+      // inspect the initial state
+      const formulaBarEl = document.querySelector('#formula-bar');
+      expect(formulaBarEl.value).toBe('');
+
+      // simualte user action
+      const trs = document.querySelectorAll('TBODY TR');
+      trs[1].cells[2].click();
+
+      //inspect the resulting state
+      expect(formulaBarEl.value).toBe('123');
+    })
+  })
+
   describe('table body', () => {
     it('highlights the current cell when clicked', () => {
       // set up the initial state

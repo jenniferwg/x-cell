@@ -11,6 +11,19 @@ td {
 }
 
 .current-cell {
-	background-color: #FDF0F6;
-	border: 2px solid pink;
+  background-color: #FFF2F9;
+  border: 2px solid #F48FB1;
+  box-shadow: 0 0 4px #F48FB1;
+}
+
+#formula-bar {
+  margin: 5px 0px 10px 0px;
+  padding: 5px;
+  width: 300px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #F48FB1;
+  box-shadow: 0 0 8px #F48FB1;
 }
