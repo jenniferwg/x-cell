@@ -81,10 +81,11 @@ describe('table-view', () => {
       const model = new TableModel(3, 3);
       const view = new TableView(model);
       view.init();
+      view.currentCellLocation = {col: 1, row: 0};
 
       // inspect the initial state
       let trs = document.querySelectorAll('TBODY TR');
-      let td = trs[0].cells[0];
+      let td = trs[0].cells[1];
       expect(td.textContent).toBe('');
 
       // simulate user action
@@ -93,7 +94,7 @@ describe('table-view', () => {
 
       // inspect the resulting state
       trs = document.querySelectorAll('TBODY TR');
-      expect(trs[0].cells[0].textContent).toBe('65');
+      expect(trs[0].cells[1].textContent).toBe('65');
     })
 
     it('updates FROM the value of the current cell', () => {
@@ -177,7 +178,7 @@ describe('table-view', () => {
       expect(ths.length).toBe(numCols);
 
       let labelTexts = Array.from(ths).map(el => el.textContent);
-      expect(labelTexts).toEqual(['A', 'B', 'C', 'D', 'E', 'F']);
+      expect(labelTexts).toEqual(['', 'A', 'B', 'C', 'D', 'E']);
     });
 
   });

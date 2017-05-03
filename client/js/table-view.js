@@ -48,7 +48,7 @@ class TableView {
     this.headerRowEl.appendChild(createTH());
     getLetterRange('A', this.model.numCols - 1)
       .map(colLabel => createTH(colLabel))
-        .forEach(th => this.headerRowEl.appendChild(th));
+      .forEach(th => this.headerRowEl.appendChild(th));
   }
 
   isCurrentCell(col, row) {
@@ -67,10 +67,11 @@ class TableView {
         const value = this.model.getValue(position);
         const td = createTD(value);
 
-        if (this.isMultipleSelect) {
+        /*if (this.isMultipleSelect) {
           //loop to add className of current-cell to each cell?
           //need to clear this variable after rendering
-        }
+        } */
+
         if (this.isCurrentCell(col, row)) {
           td.className = 'current-cell';
         }
@@ -83,30 +84,38 @@ class TableView {
     this.sheetBodyEl.appendChild(fragment);
   }
 
+  isFirstCol(col) {
+    return col === 0;
+  }
+
+  isNumericValue(value) {
+    return value || value === 0;
+  }
+
   renderTableFooter() {
     removeChildren(this.footerRowEl);
     for (let col = 0; col < this.model.numCols; col++) {
-    let sum = 0;
-    let hasValue = false;
+      let sum = 0;
+      let hasValue = false;
 
-    for (let row = 0; row < this.model.numRows; row++) {
-      if (col === 0) {
-      sum = 'Sum';
-      } else {
-      let value = parseInt(this.model.getValue({ col: col, row: row }), 10);
-      sum += (value || 0);
-      if (value || value === 0) { hasValue = true; }
+      for (let row = 0; row < this.model.numRows; row++) {
+        if (this.isFirstCol(col)) {
+          sum = 'Sum';
+        } else {
+          let value = parseInt(this.model.getValue({ col: col, row: row }));
+          sum += value || 0;
+          if (this.isNumericValue(value)) { hasValue = true; }
+        }
       }
-    }
 
-    if (sum === 0 && hasValue === true) { sum = '0'; }
-    this.footerRowEl.appendChild(createTD(sum));
+      if (sum === 0 && hasValue) { sum = '0'; }
+      this.footerRowEl.appendChild(createTD(sum));
     }
   }
 
   attachEventHandlers() {
     this.sheetBodyEl.addEventListener('click', this.handleSheetClick.bind(this));
-    this.headerRowEl.addEventListener('click', this.handleSheetColSelect.bind(this));
+    //this.headerRowEl.addEventListener('click', this.handleSheetColSelect.bind(this));
     this.formulaBarEl.addEventListener('keyup', this.handleFormulaBarChange.bind(this));
     this.addRowEl.addEventListener('click', this.handleAddRow.bind(this));
     this.addColEl.addEventListener('click', this.handleAddCol.bind(this));
@@ -131,23 +140,19 @@ class TableView {
     this.renderTableFooter();
   }
 
-  isFirstCol(col) {
-    return col === 0;
-  }
-
-  handleSheetColSelect(event) {
+  /*handleSheetColSelect(event) {
     const col = event.target.cellIndex;
-    /*if (!isFirstCol(col)) {
+    if (!isFirstCol(col)) {
       for (let row = 0; row < this.model.numRows; row++) {
       }
-    }*/
-  }
+    }
+  }*/
 
   handleSheetClick(event) {
     const col = event.target.cellIndex;
     const row = event.target.parentElement.rowIndex - 1;
 
-    if (!isFirstCol(col)) {
+    if (!this.isFirstCol(col)) {
     this.currentCellLocation = { col: col, row: row };
     this.renderTableBody();
 
