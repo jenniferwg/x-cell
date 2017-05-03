@@ -23,7 +23,7 @@ class TableView {
     }
 
     initCurrentCell() {
-      this.currentCellLocation = { col: 0, row: 0 };
+      this.currentCellLocation = { col: 1, row: 0 };
       this.renderFormulaBar();
     }
 
@@ -45,7 +45,8 @@ class TableView {
 
     renderTableHeader() {
         removeChildren(this.headerRowEl);
-        getLetterRange('A', this.model.numCols)
+        this.headerRowEl.appendChild(createTH());
+        getLetterRange('A', this.model.numCols - 1)
             .map(colLabel => createTH(colLabel))
                 .forEach(th => this.headerRowEl.appendChild(th));
     }
@@ -60,6 +61,8 @@ class TableView {
         for (let row = 0; row < this.model.numRows; row++) {
             const tr = createTR();
             for (let col = 0; col < this.model.numCols; col++) {
+                if (col === 0) { createTD(); }
+
                 const position = { col: col, row: row };
                 const value = this.model.getValue(position);
                 const td = createTD(value);
@@ -82,9 +85,13 @@ class TableView {
         let sum = 0;
         let hasValue = false;
         for (let row = 0; row < this.model.numRows; row++) {
-          let value = parseInt(this.model.getValue({ col: col, row: row }), 10);
-          sum += (value || 0);
-          if (value || value === 0) { hasValue = true; }
+          if (col === 0) {
+            sum = 'Sum';
+          } else {
+            let value = parseInt(this.model.getValue({ col: col, row: row }), 10);
+            sum += (value || 0);
+            if (value || value === 0) { hasValue = true; }
+          }
         }
         if (sum === 0 && hasValue === true) { sum = '0'; }
         this.footerRowEl.appendChild(createTD(sum));
@@ -120,6 +127,8 @@ class TableView {
     handleSheetClick(event) {
       const col = event.target.cellIndex;
       const row = event.target.parentElement.rowIndex - 1;
+
+      if (col === 0) { return; }
 
       this.currentCellLocation = { col: col, row: row };
       this.renderTableBody();

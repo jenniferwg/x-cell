@@ -1,10 +1,26 @@
+body {
+  margin: 20px 0px 0px 20px;
+}
+
 table {
   border-collapse: collapse;
+  counter-reset: serial-number;
+}
+
+tbody td:first-child:before {
+  counter-increment: serial-number;
+  content: counter(serial-number);
+  font-weight: bold;
+}
+
+tbody td:first-child {
+  background-color: #E91E63;
+  text-align: center;
 }
 
 th,
 td {
-  border: 1px solid black;
+  border: 1px solid #313131;
   min-width: 100px;
   height: 25px;
   padding: 3px;
@@ -15,7 +31,13 @@ thead {
 }
 
 tfoot {
-  background-color: #F06292;
+  background-color: #F8BBD0;
+  font-weight: bold;
+  border-top: 2px solid #313131;
+}
+
+tfoot td:first-child {
+  text-align: center;
 }
 
 .current-cell {
@@ -23,7 +45,7 @@ tfoot {
 }
 
 #formula-bar {
-  margin: 5px 0px 10px 0px;
+  margin-bottom: 10px;
   padding: 5px;
   width: 300px;
 }
