@@ -1,4 +1,4 @@
-const { getLetterRange } = require('./array-util');
+const { getLetterRange, getLetter } = require('./array-util');
 const { removeChildren, createTH, createTR, createTD } = require('./dom-util');
 
 class TableView {
@@ -32,8 +32,19 @@ class TableView {
   }
 
   renderFormulaBar() {
+    this.formulaBarEl.disabled = false;
     const currentCellValue = this.model.getValue(this.currentCellLocation);
     this.formulaBarEl.value = this.normalizeValueForRendering(currentCellValue);
+    
+    if (this.isColSelect || this.isRowSelect) {
+      if (this.isColSelect) {
+        this.formulaBarEl.value = ' < column ' + (getLetter('A', this.isColSelect)) + ' is selected > ';
+      } else {
+        this.formulaBarEl.value = ' < row ' + (this.isRowSelect) + ' is selected > ';
+      }
+      this.formulaBarEl.disabled = true;
+    }
+
     this.formulaBarEl.focus();
   }
 
@@ -67,12 +78,9 @@ class TableView {
         const value = this.model.getValue(position);
         const td = createTD(value);
 
-        /*if (this.isMultipleSelect) {
-          //loop to add className of current-cell to each cell?
-          //need to clear this variable after rendering
-        } */
-
-        if (this.isCurrentCell(col, row)) {
+        if (col === this.isColSelect || row === this.isRowSelect - 1) {
+          td.className = 'current-multiple'
+        } else if (this.isCurrentCell(col, row)) {
           td.className = 'current-cell';
         }
 
@@ -115,7 +123,7 @@ class TableView {
 
   attachEventHandlers() {
     this.sheetBodyEl.addEventListener('click', this.handleSheetClick.bind(this));
-    //this.headerRowEl.addEventListener('click', this.handleSheetColSelect.bind(this));
+    this.headerRowEl.addEventListener('click', this.handleHeaderClick.bind(this));
     this.formulaBarEl.addEventListener('keyup', this.handleFormulaBarChange.bind(this));
     this.addRowEl.addEventListener('click', this.handleAddRow.bind(this));
     this.addColEl.addEventListener('click', this.handleAddCol.bind(this));
@@ -140,24 +148,36 @@ class TableView {
     this.renderTableFooter();
   }
 
-  /*handleSheetColSelect(event) {
+  handleHeaderClick(event) {
     const col = event.target.cellIndex;
-    if (!isFirstCol(col)) {
-      for (let row = 0; row < this.model.numRows; row++) {
-      }
+
+    if (!this.isFirstCol(col)) {
+      this.isColSelect = col;
+
+      this.currentCellLocation = '';
+      this.renderTableBody();
+      this.renderFormulaBar();
+
+      this.isColSelect = false;
     }
-  }*/
+  }
 
   handleSheetClick(event) {
     const col = event.target.cellIndex;
     const row = event.target.parentElement.rowIndex - 1;
 
-    if (!this.isFirstCol(col)) {
-    this.currentCellLocation = { col: col, row: row };
-    this.renderTableBody();
+    if (this.isFirstCol(col)) {
+      this.isRowSelect = row + 1;
+      this.currentCellLocation = '';
 
+   } else {
+      this.currentCellLocation = { col: col, row: row };
+   }
+
+    this.renderTableBody();
     this.renderFormulaBar();
-    }
+
+    this.isRowSelect = false;
   }
 }
 

@@ -44,6 +44,10 @@ tfoot td:first-child {
   background-color: #FCE4EC;
 }
 
+.current-multiple {
+  background-color: black;
+}
+
 #formula-bar {
   margin-bottom: 10px;
   padding: 5px;

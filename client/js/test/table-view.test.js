@@ -118,6 +118,50 @@ describe('table-view', () => {
   })
 
   describe('table body', () => {
+    it('highlights the current row when clicked', () => {
+      // set up the initial state 
+      const model = new TableModel(3, 3);
+      const view = new TableView(model);
+      view.init();
+
+      // inspect initial state
+      let multiple = document.getElementsByClassName('current-multiple');
+      expect(multiple.length).toBe(0);
+
+      // simulate user action
+      const ths = document.querySelectorAll('TBODY TR');
+      ths[1].cells[0].click();
+
+      // inspect the resulting state
+      const formulaBarEl = document.querySelector('#formula-bar');
+      multiple = document.getElementsByClassName('current-multiple');
+      expect(multiple.length).toBe(3);
+      expect(formulaBarEl.value).toBe(' < row 2 is selected > ');
+      expect(view.currentCellLocation).toBe('');
+    })
+
+    it('highlights the current column when clicked', () => {
+      // set up the initial state 
+      const model = new TableModel(3, 3);
+      const view = new TableView(model);
+      view.init();
+
+      // inspect initial state
+      let multiple = document.getElementsByClassName('current-multiple');
+      expect(multiple.length).toBe(0);
+
+      // simulate user action
+      const ths = document.querySelectorAll('THEAD TR');
+      ths[0].cells[2].click();
+
+      // inspect the resulting state
+      const formulaBarEl = document.querySelector('#formula-bar');
+      multiple = document.getElementsByClassName('current-multiple');
+      expect(multiple.length).toBe(3);
+      expect(formulaBarEl.value).toBe(' < column B is selected > ');
+      expect(view.currentCellLocation).toBe('');
+    })
+
     it('highlights the current cell when clicked', () => {
       // set up the initial state
       const model = new TableModel(10, 5);
