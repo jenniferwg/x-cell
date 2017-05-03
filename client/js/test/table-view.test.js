@@ -11,6 +11,27 @@ describe('table-view', () => {
       document.documentElement.innerHTML = html;
   });
 
+  describe('add row and column buttons', () => {
+    it('adds a row and column', () => {
+      // set up initial state
+      const model = new TableModel(2, 2);
+      const view = new TableView(model);
+      view.init()
+
+      // inspect the initial state
+      expect(model.numCols).toBe(2);
+      expect(model.numRows).toBe(2);
+
+      // simulate user action
+      view.handleAddRow();
+      view.handleAddCol();
+
+      // inspect the resulting state
+      expect(model.numCols).toBe(3);
+      expect(model.numRows).toBe(3);
+    })
+  })
+
   describe('table footer', () => {
     it('calculates sum of valid positive values', () => {
       // set up initial state
