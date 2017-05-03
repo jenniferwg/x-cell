@@ -67,12 +67,36 @@ class TableView {
         this.currentCellLocation.col === col;
   }
 
+  shiftCellValues() {
+    for (let row = this.model.numRows - 1; row > 0; row--) {
+      for (let col = this.model.numCols - 1; col > 0; col--) {
+        if (this.addRowAfter && row > this.isRowSelect) {
+          let currentValue = this.model.getValue({ col: col, row: row - 1 });
+          this.model.setValue({ col: col, row: row }, currentValue);
+          this.model.setValue({ col: col, row: row - 1 }, '');
+        }
+
+        if (this.addColAfter && col > this.isColSelect) {
+          let currentValue = this.model.getValue({ col: col, row: row});
+          this.model.setValue({ col: col + 1, row: row }, currentValue);
+          this.model.setValue({ col: col, row: row }, '');
+        }
+      }
+    }
+    this.addRowAfter = false;
+    this.addColAfter = false;
+  }
+
   renderTableBody() {
     const fragment = document.createDocumentFragment();
     for (let row = 0; row < this.model.numRows; row++) {
       const tr = createTR();
       for (let col = 0; col < this.model.numCols; col++) {
         if (col === 0) { createTD(); }
+
+        if (this.addRowAfter || this.addColAfter) {
+          this.shiftCellValues(); 
+        }
 
         const position = { col: col, row: row };
         const value = this.model.getValue(position);
@@ -131,11 +155,21 @@ class TableView {
 
   handleAddRow() {
     this.model.numRows += 1;
+
+    if (this.isRowSelect) {
+      this.addRowAfter = true;
+    }
+
     this.renderTableBody();
   }
 
   handleAddCol() {
     this.model.numCols += 1;
+
+    if (this.isColSelect) {
+      this.addColAfter = true;
+    }
+
     this.renderTableHeader();
     this.renderTableBody();
     this.renderTableFooter();
@@ -155,10 +189,9 @@ class TableView {
       this.isColSelect = col;
 
       this.currentCellLocation = '';
+      this.isRowSelect = false;
       this.renderTableBody();
       this.renderFormulaBar();
-
-      this.isColSelect = false;
     }
   }
 
@@ -169,15 +202,15 @@ class TableView {
     if (this.isFirstCol(col)) {
       this.isRowSelect = row + 1;
       this.currentCellLocation = '';
-
+      this.isColSelect = false;
    } else {
       this.currentCellLocation = { col: col, row: row };
+      this.isColSelect = false;
+      this.isRowSelect = false;
    }
 
     this.renderTableBody();
     this.renderFormulaBar();
-
-    this.isRowSelect = false;
   }
 }
 

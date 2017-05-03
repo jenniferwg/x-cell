@@ -12,6 +12,59 @@ describe('table-view', () => {
   });
 
   describe('add row and column buttons', () => {
+    it('adds a row below the highlighted row', () => {
+      //set up initial state
+      const model = new TableModel(3, 3);
+      model.setValue({col: 1, row: 0}, 'noshift');
+      model.setValue({col: 1, row: 2}, 'shift');
+      const view = new TableView(model);
+      view.init()
+
+      // inspect the initial state
+      let trs = document.querySelectorAll('TBODY TR');
+      expect(model.numCols).toBe(3);
+      expect(model.numRows).toBe(3);
+      expect(trs[2].cells[1].textContent).toBe('shift');
+
+      // simulate user action
+      trs[1].cells[0].click();
+      view.handleAddRow();
+
+      // inspect the resulting state
+      trs = document.querySelectorAll('TBODY TR');
+      expect(model.numCols).toBe(3);
+      expect(model.numRows).toBe(4);
+      expect(trs[0].cells[1].textContent).toBe('noshift');
+      expect(trs[3].cells[1].textContent).toBe('shift');
+      expect(trs[2].cells[1].textContent).toBe('');
+    })
+
+    it('adds a column to the right of highlighted column', () => {
+      //set up initial state
+      const model = new TableModel(3, 3);
+      model.setValue({col: 1, row: 2}, 'noshift');
+      model.setValue({col: 2, row: 0}, 'shift');
+      const view = new TableView(model);
+      view.init()
+
+      // inspect the initial state
+      expect(model.numCols).toBe(3);
+      expect(model.numRows).toBe(3);
+
+      // simulate user action
+      let ths = document.querySelectorAll('THEAD TR');
+      ths[0].cells[1].click();
+      view.handleAddCol();
+
+      // inspect the resulting state
+      let trs = document.querySelectorAll('TBODY TR');
+      expect(model.numCols).toBe(4);
+      expect(model.numRows).toBe(3);
+      expect(trs[2].cells[1].textContent).toBe('noshift');
+      expect(trs[0].cells[2].textContent).toBe('shift');
+      expect(trs[0].cells[1].textContent).toBe('');
+    })
+
     it('adds a row and column', () => {
       // set up initial state
       const model = new TableModel(2, 2);
