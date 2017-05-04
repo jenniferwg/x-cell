@@ -10,7 +10,14 @@ const getLetterRange = function(firstLetter = 'A', numLetters) {
     .map(charCode => String.fromCharCode(charCode));
 };
 
+const getLetter = function(firstLetter = 'A', numCols) {
+  const rangeStart = firstLetter.charCodeAt(0);
+  const rangeEnd = rangeStart + numCols -1;
+  return String.fromCharCode(rangeEnd);
+};
+
 module.exports = {
   getRange: getRange,
-  getLetterRange: getLetterRange
+  getLetterRange: getLetterRange,
+  getLetter: getLetter
 };

@@ -1,29 +1,67 @@
+body {
+  margin: 20px 0px 0px 20px;
+}
+
 table {
   border-collapse: collapse;
+  counter-reset: serial-number;
+}
+
+tbody td:first-child:before {
+  counter-increment: serial-number;
+  content: counter(serial-number);
+  font-weight: bold;
+}
+
+tbody td:first-child {
+  background-color: #E91E63;
+  text-align: center;
 }
 
 th,
 td {
-  border: 1px solid black;
+  border: 1px solid #313131;
   min-width: 100px;
   height: 25px;
   padding: 3px;
 }
 
+thead {
+  background-color: #E91E63;
+}
+
+tfoot {
+  background-color: #F8BBD0;
+  font-weight: bold;
+  border-top: 2px solid #313131;
+}
+
+tfoot td:first-child {
+  text-align: center;
+}
+
 .current-cell {
-  background-color: #FFF2F9;
-  border: 2px solid #F48FB1;
-  box-shadow: 0 0 4px #F48FB1;
+  background-color: #FCE4EC;
+}
+
+.current-multiple {
+  background-color: #FCE4EC;
 }
 
 #formula-bar {
-  margin: 5px 0px 10px 0px;
+  margin-bottom: 10px;
   padding: 5px;
   width: 300px;
+}
+
+input[type="button"] {
+  margin: 0px 0px 10px 0px;
+  width: 149px;
 }
 
 input:focus {
   outline: none;
   border-color: #F48FB1;
   box-shadow: 0 0 8px #F48FB1;
+  background-color: white;
 }
