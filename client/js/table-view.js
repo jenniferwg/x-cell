@@ -31,18 +31,24 @@ class TableView {
     return value || '';
   }
 
+  setFormulaMultiple(select) {
+    this.formulaBarEl.disabled = true;
+    if (select === 'col') {
+      return ' < column ' + (getLetter('A', this.isColSelect)) + ' is selected > ';
+    } else {
+      return ' < row ' + (this.isRowSelect) + ' is selected > ';
+    }
+  }
+
   renderFormulaBar() {
     this.formulaBarEl.disabled = false;
     const currentCellValue = this.model.getValue(this.currentCellLocation);
     this.formulaBarEl.value = this.normalizeValueForRendering(currentCellValue);
     
-    if (this.isColSelect || this.isRowSelect) {
-      if (this.isColSelect) {
-        this.formulaBarEl.value = ' < column ' + (getLetter('A', this.isColSelect)) + ' is selected > ';
-      } else {
-        this.formulaBarEl.value = ' < row ' + (this.isRowSelect) + ' is selected > ';
-      }
-      this.formulaBarEl.disabled = true;
+    if (this.isColSelect) {
+        this.formulaBarEl.value = this.setFormulaMultiple('col');
+    } else if (this.isRowSelect) {
+        this.formulaBarEl.value = this.setFormulaMultiple('row');
     }
 
     this.formulaBarEl.focus();
@@ -67,22 +73,37 @@ class TableView {
         this.currentCellLocation.col === col;
   }
 
-  shiftCellValues() {
+  shiftRows() {
     for (let row = this.model.numRows - 1; row > 0; row--) {
       for (let col = this.model.numCols - 1; col > 0; col--) {
-        if (this.addRowAfter && row > this.isRowSelect) {
+        if (row > this.isRowSelect) {
           let currentValue = this.model.getValue({ col: col, row: row - 1 });
           this.model.setValue({ col: col, row: row }, currentValue);
           this.model.setValue({ col: col, row: row - 1 }, '');
         }
+      }
+    }
+  }
 
-        if (this.addColAfter && col > this.isColSelect) {
+  shiftCols() {
+    for (let row = this.model.numRows - 1; row > 0; row--) {
+      for (let col = this.model.numCols - 1; col > 0; col--) {
+        if (col > this.isColSelect) {
           let currentValue = this.model.getValue({ col: col, row: row});
           this.model.setValue({ col: col + 1, row: row }, currentValue);
           this.model.setValue({ col: col, row: row }, '');
         }
       }
     }
+  }
+
+  shiftCellValues() {
+    if (this.addRowAfter) {
+      this.shiftRows();
+    } else {
+      this.shiftCols();
+    }
+    
     this.addRowAfter = false;
     this.addColAfter = false;
   }
