@@ -2,7 +2,7 @@
 
 Welcome to this tiny X-Cell app!
 
-This is a very barebones (and pink) spreadsheet app made for HR pre-course. :)
+This is a very barebones (and pink) spreadsheet app made for HR pre-course. Available [here](https://nameless-ravine-17823.herokuapp.com).
 
 ## Feature & Tech Spec
 [Google doc link](https://docs.google.com/document/d/1ei4RVjbULNl-boutrHSabgM7OneSCZSipueQ2adxwUc/edit?usp=sharing)
